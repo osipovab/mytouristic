@@ -1,0 +1,27 @@
+﻿/* content */
+
+.leftBlock, .rightBlock {
+    float: left;
+    width: 200px;
+}
+.centerBlock
+{
+    float: left;
+    width: 500px;
+}
+
+ .rightBlock {
+    float: left;
+     padding-left: 20px;
+    width: 200px;
+}
+
+.rangeSlider {
+    padding: 0px 10px;
+}
+
+.rangeSlider input.rangeSliderFrom,
+.rangeSlider input.rangeSliderTo {
+    display: none;
+    margin: 0;
+}

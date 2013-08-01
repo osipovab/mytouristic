@@ -1,0 +1,91 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+@section featured {
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>@ViewBag.Title.</h1>
+                <h2>@ViewBag.Message</h2>
+            </hgroup>
+            <p>
+                To learn more about ASP.NET MVC visit
+                <a href="http://asp.net/mvc" title="ASP.NET MVC Website">http://asp.net/mvc</a>.
+                The page features <mark>videos, tutorials, and samples</mark> to help you get the most from ASP.NET MVC.
+                If you have any questions about ASP.NET MVC visit
+                <a href="http://forums.asp.net/1146.aspx/1?MVC" title="ASP.NET MVC Forum">our forums</a>.
+            </p>
+        </div>
+    </section>
+}
+
+<h3>Поиск авиабилетов:</h3>
+
+
+
+<div class="leftBlock">
+   
+    <p data-bind="text: aviaFormModel.error"></p>
+    откуда <br />
+    <select id="fromCity" data-bind="options: aviaFormModel.cities, selectedOptions: aviaFormModel.fromCity"></select><br />
+    куда<br />
+    <select id="toCity" data-bind="options: aviaFormModel.cities, selectedOptions: aviaFormModel.toCity"></select><br />
+    дата вылета<br />
+    <input type="text" data-bind="datepicker: aviaFormModel.fromDate" /><br />
+    дата прилёта<br />
+    <input type="text" data-bind="datepicker: aviaFormModel.toDate" /><br />
+    <input type="radio" name="searchType" value="byPrice" data-bind="checked: aviaFormModel.searchType && reset" /> по цене<br />
+    <input type="radio" name="searchType" value="bySchedule" data-bind="checked: aviaFormModel.searchType && reset"/> по расписанию<br />
+    <button id="submit" data-bind="click: search" >Найти</button>
+
+</div>
+
+
+<div class="centerBlock">
+    
+    @*    <div data-bind="visible: aviaFormModel.searchType == 'byPrice', foreach: {data: aviaPriceModel.offers, as: 'offer'}">*@
+    @*        <div data-bind="foreach: {data: offer.flight, as 'flight'}">*@
+    @*            <span data-bind="text: flight.airlineCode"></span>*@
+    @*        </div>*@
+    @*        <span data-bind="text:offer.price"></span>*@
+    @*       </div>*@
+    <span data-bind="text: aviaFormModel.searchType"></span>
+    <div data-bind="foreach: {data: aviaPriceModel.offers, as: 'offer'}, visible: aviaFormModel.searchType() == 'byPrice'">
+        <span data-bind="text: offer.price"></span>
+        <div data-bind="foreach: {data: offer.flights, as: 'flight'}">
+            <span data-bind="text: flight.airlineCode"></span>
+            <span data-bind="text: flight.number"></span>
+            <span data-bind="text: flight.route"></span>
+            <span data-bind="dateString: flight.date"></span>
+            <br />
+        </div>
+            
+    </div>
+</div>
+
+
+
+<div class="rightBlock">
+    Авиакомпания <br />
+    Вылет
+    c <span data-bind="text: aviaFilterModel.timeFromStart"></span>   
+     до <span data-bind="text: aviaFilterModel.timeFromEnd"></span>
+    <div class="rangeSlider" data-bind="rangeSlider: { minFrom: 0, maxTo: 24, from: 0, to: 24 }">
+        <input type="text" disabled class="rangeSliderFrom" data-bind="value: aviaFilterModel.timeFromStart" />
+        <input type="text" disabled class="rangeSliderTo" data-bind="value: aviaFilterModel.timeFromEnd" />
+        <div class="slider"></div>
+    </div>    
+    Прилёт
+    c <span data-bind="text: aviaFilterModel.timeToStart"></span>   
+     до <span data-bind="text: aviaFilterModel.timeToEnd"></span>
+
+    <div class="rangeSlider" data-bind="rangeSlider: { minFrom: 0, maxTo: 24, from: 0, to: 24 }">
+        <input type="text" disabled class="rangeSliderFrom" data-bind="value: aviaFilterModel.timeToStart" />
+        <input type="text" disabled class="rangeSliderTo" data-bind="value: aviaFilterModel.timeToEnd" />
+        <div class="slider"></div>
+    </div>    
+
+</div>
+
+
+
