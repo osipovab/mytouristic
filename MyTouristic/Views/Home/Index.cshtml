@@ -34,8 +34,8 @@
     <input type="text" data-bind="datepicker: aviaFormModel.fromDate" /><br />
     дата прилёта<br />
     <input type="text" data-bind="datepicker: aviaFormModel.toDate" /><br />
-    <input type="radio" name="searchType" value="byPrice" data-bind="checked: aviaFormModel.searchType && reset" /> по цене<br />
-    <input type="radio" name="searchType" value="bySchedule" data-bind="checked: aviaFormModel.searchType && reset"/> по расписанию<br />
+    <input type="radio" name="searchType" value="byPrice" data-bind="checked: aviaFormModel.searchType" /> по цене<br />
+    <input type="radio" name="searchType" value="bySchedule" data-bind="checked: aviaFormModel.searchType"/> по расписанию<br />
     <button id="submit" data-bind="click: search" >Найти</button>
 
 </div>
@@ -51,15 +51,15 @@
     @*       </div>*@
     <span data-bind="text: aviaFormModel.searchType"></span>
     <div data-bind="foreach: {data: aviaPriceModel.offers, as: 'offer'}, visible: aviaFormModel.searchType() == 'byPrice'">
-        <span data-bind="text: offer.price"></span>
-        <div data-bind="foreach: {data: offer.flights, as: 'flight'}">
-            <span data-bind="text: flight.airlineCode"></span>
-            <span data-bind="text: flight.number"></span>
-            <span data-bind="text: flight.route"></span>
-            <span data-bind="dateString: flight.date"></span>
-            <br />
+        <div class="offer">
+            <button class="btnPrice" data-bind="text: 'купить за:\n' + offer.price()" ></button>
+            <div data-bind="foreach: {data: offer.flights, as: 'flight'}" >
+                <span data-bind="text: flight.airlineCode"></span>-<span data-bind="text: flight.number"></span>
+                <span data-bind="text: flight.date"></span>
+                <span data-bind="text: flight.route"></span>
+                <span data-bind="text: flight.time"></span><br />
+            </div>
         </div>
-            
     </div>
 </div>
 

@@ -11,13 +11,24 @@ AviaProcessContainerModel = function() {
         self.aviaFormModel.init();
     };
     self.search = function () {
-        if (self.aviaFormModel.searchType() == "byPrice") {
-            self.aviaPriceModel.search();
-        } else {
-            self.aviaScheduleModel.search();
+       
+        if (self.validation()) {
+            if (self.aviaFormModel.searchType() == "byPrice") {
+                self.aviaPriceModel.search(self.aviaFormModel.fromCity(), self.aviaFormModel.toCity());
+            } else {
+                self.aviaScheduleModel.search();
+            }
         }
     };
 
+    self.validation = function () {
+            var errorString = "";
+            if (self.aviaFormModel.fromCity() == self.aviaFormModel.toCity())
+                errorString += "Пункт вылета не должен совпадать с пунктом прилета";
+
+            if (errorString.length > 1) { alert(errorString); return false; } else { return true; }
+    };
+    
     self.reset = function() {
         self.aviaPriceModel = new AviaPriceModel();
         self.aviaScheduleModel = new AviaScheduleModel();
@@ -42,7 +53,11 @@ AviaFormModel = function () {
     function loadCities() {
         $.ajax({
             url: "api/City",
-            success: function (result) { self.cities(result); },
+            success: function (result) {
+                self.cities(result);
+                self.fromCity(result[0]);
+                self.toCity(result[0]);
+            },
             error: function () { self.error("Ошибка при загрузке списка городов"); }
         });
     }
@@ -55,17 +70,17 @@ AviaPriceModel = function () {
 
     self.offers = ko.observableArray([]);
     
-    self.search = function () {
-        //, "toCity": $('toCity').val(), "fromDate": $('fromDate').val(), "toDate": $('toDate').val() },
+    self.search = function (fromCity, toCity, fromDate, toDate) {
         $.ajax({
             url: "api/Search/SearchByPrice",
             dataType: 'json',
-            data: { "fromCity": $('fromCity').val()},
+            data: ({ 'fromCity': fromCity, 'toCity': toCity }),
             success: function (result) {
+                self.offers.removeAll();
                 $.each(result, function (index, offer) {
                     var flights = [];
                     $.each(offer.Flights, function(index, flight) {
-                        flights.push(new Flight(flight.AirlineCode,flight.Number, flight.Date, ""));
+                        flights.push(new Flight(flight.AirlineCode, flight.Number, moment(flight.Date).format('DD.MM.YYYY'), moment(flight.Date).format('H:m'), flight.Route));
                     });
                     self.offers.push(new Offer(flights, offer.Price));
                 });
@@ -113,12 +128,13 @@ Offer = function(flights, price) {
     self.price = ko.observable(price);
 };
 
-Flight = function(airlineCode, number, date, route) {
+Flight = function(airlineCode, number, date, time, route) {
     var self = this;
 
     self.airlineCode = ko.observable(airlineCode);
     self.number = ko.observable(number);
     self.date = ko.observable(date);
+    self.time = ko.observable(time);
     self.route = ko.observable(route);
 };
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 
 namespace MyTouristic.Models
@@ -9,16 +10,16 @@ namespace MyTouristic.Models
         public List<Flight> Flights { get; set; }
         public double Price { get; set; }
 
-        public List<Offer> GetRandomOffer(DateTime date)
+        public List<Offer> GetRandomOffer(string fromCity, string toCity, DateTime date)
         {
             var listOffer = new List<Offer>();
             var random = new Random();
-            for (var i = 0; i < 5; i++ )
+            for (var i = 0; i < 10; i++ )
             {
-                listOffer.Add(new Offer { Flights = new Flight().GetRandomFlight(date), Price =  random.Next(2000, 5000)});
+                listOffer.Add(new Offer { Flights = new Flight().GetRandomFlight(fromCity, toCity, date), Price = random.Next(2000, 5000) });
             }
                 
-            return listOffer;
+            return listOffer.OrderBy(r=>r.Price).ToList();
         }
     }
 }
