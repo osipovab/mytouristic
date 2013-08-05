@@ -30,7 +30,7 @@ ko.bindingHandlers.datepicker = {
         ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
             $(element).datepicker("destroy");
         });
-
+        $('#ui-datepicker-div').css('display', 'none');
     },
     update: function (element, valueAccessor) {
         var value = ko.utils.unwrapObservable(valueAccessor());

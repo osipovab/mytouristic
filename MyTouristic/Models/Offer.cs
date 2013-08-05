@@ -24,6 +24,8 @@ namespace MyTouristic.Models
                     System.Threading.Thread.Sleep(10);
                     listOffer.Add(new Offer {Flights = fl, Price = random.Next(2000, 9000)});
                 }
+
+                return listOffer.OrderBy(r => r.Price).ToList();
             }
             else
             {
@@ -34,9 +36,8 @@ namespace MyTouristic.Models
                 fl = new Flight().GetRandomFlightByShedule(toCity, fromCity, toDate);
                 System.Threading.Thread.Sleep(150);
                 listOffer.Add(new Offer { Flights = fl, Price = random.Next(2000, 9000) });
+                return listOffer;
             }
-
-            return listOffer.OrderBy(r=>r.Price).ToList();
         }
     }
 }

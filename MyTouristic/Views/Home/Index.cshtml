@@ -29,7 +29,7 @@
     откуда <br />
     <select id="fromCity" data-bind="options: aviaFormModel.cities, selectedOptions: aviaFormModel.fromCity"></select><br />
     куда<br />
-    <select id="toCity" data-bind="options: aviaFormModel.cities, selectedOptions: aviaFormModel.toCity"></select><br />
+    <select id="toCity" data-bind="options: aviaFormModel.cities, selectedOptions: aviaFormModel.toCity()"></select><br />
     дата вылета<br />
     <input type="text" data-bind="datepicker: aviaFormModel.fromDate" /><br />
     дата прилёта<br />
@@ -42,41 +42,45 @@
 
 
 <div class="centerBlock">
-    
-    <span data-bind="text: aviaFormModel.searchType"></span>
-    
-    <div data-bind="visible: aviaFormModel.searchType() == 'bySchedule'">
-        
+    <div id="textInfo">
+        Нажмите кнопку найти для  отображения результатов
+    </div>
+    <div data-bind="visible: aviaFormModel.searchType() == 'bySchedule' && aviaScheduleModel.flightFrom().length > 0">
+        ПОИСК ПО РАСПИСАНИЮ:
         <span data-bind="text: aviaFormModel.fromCity()"> </span> -  <span data-bind="text: aviaFormModel.toCity()"> </span>
         <span data-bind="text:  moment(aviaFormModel.fromDate()).format('DD.MM.YYYY')"> </span>
         <div data-bind="foreach: {data: aviaScheduleModel.flightFrom, as: 'flight'}">
-            <span data-bind="text: flight.airlineCode"></span>-<span data-bind="text: flight.number"></span>
-            <span data-bind="text: flight.date"></span>
-            <span data-bind="text: flight.route"></span>
-            <span data-bind="text: flight.time"></span><br />
+            <div  class="offer">
+                <span data-bind="text: flight.airlineCode"></span>-<span data-bind="text: flight.number"></span>
+                <span data-bind="text: flight.date"></span>
+                <span data-bind="text: flight.route"></span>
+                <span data-bind="text: flight.time"></span>
+            </div>
         </div>
         
         <span data-bind="text: aviaFormModel.toCity()"> </span> -  <span data-bind="text: aviaFormModel.fromCity()"> </span>
         <span data-bind="text:  moment(aviaFormModel.toDate()).format('DD.MM.YYYY')"> </span>
         <div data-bind="foreach: {data: aviaScheduleModel.flightTo, as: 'flight'}">
-            <span data-bind="text: flight.airlineCode"></span>-<span data-bind="text: flight.number"></span>
-            <span data-bind="text: flight.date"></span>
-            <span data-bind="text: flight.route"></span>
-            <span data-bind="text: flight.time"></span><br />
-        </div>
-    </div>
-    
-    
-
-    
-    <div data-bind="foreach: {data: aviaPriceModel.offers, as: 'offer'}, visible: aviaFormModel.searchType() == 'byPrice'">
-        <div class="offer">
-            <button class="btnPrice" data-bind="text: 'купить за:' + offer.price()" ></button>
-            <div data-bind="foreach: {data: offer.flights, as: 'flight'}" >
+            <div  class="offer">
                 <span data-bind="text: flight.airlineCode"></span>-<span data-bind="text: flight.number"></span>
                 <span data-bind="text: flight.date"></span>
                 <span data-bind="text: flight.route"></span>
-                <span data-bind="text: flight.time"></span><br />
+                <span data-bind="text: flight.time"></span>
+            </div>
+        </div>
+    </div>
+    
+    <div data-bind="visible: aviaFormModel.searchType() == 'byPrice' && aviaPriceModel.offers().length > 0">
+        ПОИСК ПО ЦЕНЕ:
+        <div data-bind="foreach: {data: aviaPriceModel.offers, as: 'offer'}">
+            <div class="offer">
+                <button class="btnPrice" data-bind="text: 'купить за:' + offer.price()" ></button>
+                <div data-bind="foreach: {data: offer.flights, as: 'flight'}" >
+                    <span data-bind="text: flight.airlineCode"></span>-<span data-bind="text: flight.number"></span>
+                    <span data-bind="text: flight.date"></span>
+                    <span data-bind="text: flight.route"></span>
+                    <span data-bind="text: flight.time"></span><br />
+                </div>
             </div>
         </div>
     </div>

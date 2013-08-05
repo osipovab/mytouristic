@@ -35,11 +35,11 @@ AviaProcessContainerModel = function() {
             if (errorString.length > 1) { alert(errorString); return false; } else { return true; }
     };
     
-    self.reset = function() {
-        self.aviaPriceModel = new AviaPriceModel();
-        self.aviaScheduleModel = new AviaScheduleModel();
+    self.reset = function () {
+        self.aviaPriceModel.offers.removeAll();
+        self.aviaScheduleModel.flightFrom.removeAll();
+        self.aviaScheduleModel.flightTo.removeAll();
     };
-
 };
 
 AviaFormModel = function () {
@@ -52,6 +52,7 @@ AviaFormModel = function () {
     self.fromDate = ko.observable();
     self.toDate = ko.observable();
     self.searchType = ko.observable("byPrice");
+
     self.init = function () {
         loadCities();
         loadDate();
@@ -68,7 +69,7 @@ AviaFormModel = function () {
             error: function () { self.error("Ошибка при загрузке списка городов"); }
         });
     }
-    
+
     function loadDate() {
         self.fromDate(new Date);
         var myDate = new Date();
@@ -83,7 +84,6 @@ AviaPriceModel = function () {
     var self = this;
 
     self.offers = ko.observableArray([]);
-    self.visible = true;
     
     self.search = function (fromCity, toCity, fromDate, toDate) {
 
