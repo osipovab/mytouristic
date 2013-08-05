@@ -14,7 +14,7 @@ AviaProcessContainerModel = function() {
        
         if (self.validation()) {
             if (self.aviaFormModel.searchType() == "byPrice") {
-                self.aviaPriceModel.search(self.aviaFormModel.fromCity(), self.aviaFormModel.toCity());
+                self.aviaPriceModel.search(self.aviaFormModel.fromCity(), self.aviaFormModel.toCity(), self.aviaFormModel.fromDate(), self.aviaFormModel.toCity());
             } else {
                 self.aviaScheduleModel.search();
             }
@@ -74,13 +74,13 @@ AviaPriceModel = function () {
         $.ajax({
             url: "api/Search/SearchByPrice",
             dataType: 'json',
-            data: ({ 'fromCity': fromCity, 'toCity': toCity }),
+            data: ({ 'fromCity': fromCity, 'toCity': toCity, 'fromDate': fromDate, 'toDate' : toDate }),
             success: function (result) {
                 self.offers.removeAll();
                 $.each(result, function (index, offer) {
                     var flights = [];
                     $.each(offer.Flights, function(index, flight) {
-                        flights.push(new Flight(flight.AirlineCode, flight.Number, moment(flight.Date).format('DD.MM.YYYY'), moment(flight.Date).format('H:m'), flight.Route));
+                        flights.push(new Flight(flight.AirlineCode, flight.Number, moment(flight.Date).format('DD.MM.YYYY'), moment(flight.Date).format('HH:mm'), flight.Route));
                     });
                     self.offers.push(new Offer(flights, offer.Price));
                 });

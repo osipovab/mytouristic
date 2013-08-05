@@ -52,7 +52,7 @@
     <span data-bind="text: aviaFormModel.searchType"></span>
     <div data-bind="foreach: {data: aviaPriceModel.offers, as: 'offer'}, visible: aviaFormModel.searchType() == 'byPrice'">
         <div class="offer">
-            <button class="btnPrice" data-bind="text: 'купить за:\n' + offer.price()" ></button>
+            <button class="btnPrice" data-bind="text: 'купить за:' + offer.price()" ></button>
             <div data-bind="foreach: {data: offer.flights, as: 'flight'}" >
                 <span data-bind="text: flight.airlineCode"></span>-<span data-bind="text: flight.number"></span>
                 <span data-bind="text: flight.date"></span>
