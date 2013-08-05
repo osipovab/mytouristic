@@ -12,13 +12,19 @@ AviaProcessContainerModel = function() {
     };
     self.search = function () {
        
-        if (self.validation()) {
-            if (self.aviaFormModel.searchType() == "byPrice") {
-                self.aviaPriceModel.search(self.aviaFormModel.fromCity(), self.aviaFormModel.toCity(), self.aviaFormModel.fromDate(), self.aviaFormModel.toCity());
-            } else {
-                self.aviaScheduleModel.search();
+        //if (self.validation()) {
+        if (self.aviaFormModel.searchType() == "byPrice") {
+                var fDate = self.aviaFormModel.fromDate().getFullYear() + '-' + (self.aviaFormModel.fromDate().getMonth() + 1) + '-' + self.aviaFormModel.fromDate().getDate();
+                var tDate = self.aviaFormModel.toDate().getFullYear() + '-' + (self.aviaFormModel.toDate().getMonth() + 1) + '-' + self.aviaFormModel.toDate().getDate();
+                self.aviaPriceModel.search(self.aviaFormModel.fromCity(), self.aviaFormModel.toCity(), fDate, tDate);
+
+               
+        } else {
+                var fDate = self.aviaFormModel.fromDate().getFullYear() + '-' + (self.aviaFormModel.fromDate().getMonth() + 1) + '-' + self.aviaFormModel.fromDate().getDate();
+                var tDate = self.aviaFormModel.toDate().getFullYear() + '-' + (self.aviaFormModel.toDate().getMonth() + 1) + '-' + self.aviaFormModel.toDate().getDate();
+                self.aviaScheduleModel.search(self.aviaFormModel.fromCity(), self.aviaFormModel.toCity(), fDate, tDate);
             }
-        }
+        //}
     };
 
     self.validation = function () {
@@ -48,6 +54,7 @@ AviaFormModel = function () {
     self.searchType = ko.observable("byPrice");
     self.init = function () {
         loadCities();
+        loadDate();
     };
     
     function loadCities() {
@@ -56,10 +63,17 @@ AviaFormModel = function () {
             success: function (result) {
                 self.cities(result);
                 self.fromCity(result[0]);
-                self.toCity(result[0]);
+                self.toCity(result[1]);
             },
             error: function () { self.error("Ошибка при загрузке списка городов"); }
         });
+    }
+    
+    function loadDate() {
+        self.fromDate(new Date);
+        var myDate = new Date();
+        myDate.setDate(myDate.getDate() + 7);
+        self.toDate(myDate);
     }
 
 };
@@ -69,8 +83,10 @@ AviaPriceModel = function () {
     var self = this;
 
     self.offers = ko.observableArray([]);
+    self.visible = true;
     
     self.search = function (fromCity, toCity, fromDate, toDate) {
+
         $.ajax({
             url: "api/Search/SearchByPrice",
             dataType: 'json',
@@ -94,29 +110,37 @@ AviaPriceModel = function () {
 AviaScheduleModel = function() {
     var self = this;
     
-    self.offers = ko.observableArray([]);
+    self.flightFrom = ko.observableArray([]);
+    self.flightTo = ko.observableArray([]);
     
-    self.search = function() {
+    self.search = function (fromCity, toCity, fromDate, toDate) {
         $.ajax({
             url: "api/Search/SearchBySchedule",
-            data: { },
-            success: function(result) {
-                self.offers(result);
+            dataType: 'json',
+            data: ({ 'fromCity': fromCity, 'toCity': toCity, 'fromDate': fromDate, 'toDate': toDate }),
+            success: function (result) {
+                    self.flightFrom.removeAll();
+                    self.flightTo.removeAll();
+                    $.each(result[0].Flights, function (index, flight) {
+                        self.flightFrom.push(new Flight(flight.AirlineCode, flight.Number, moment(flight.Date).format('DD.MM.YYYY'), moment(flight.Date).format('HH:mm'), flight.Route));
+                    });  
+                    $.each(result[1].Flights, function (index, flight) {
+                        self.flightTo.push(new Flight(flight.AirlineCode, flight.Number, moment(flight.Date).format('DD.MM.YYYY'), moment(flight.Date).format('HH:mm'), flight.Route));
+                    });
             },
             error: function () { alert("Ошибка при поиске расписанию"); }
         });
     };
-
 };
 
 
-
-AviaFilterModel  = function () {
+AviaFilterModel = function() {
     var self = this;
     self.timeFromStart = ko.observable("0");
     self.timeFromEnd = ko.observable("24");
     self.timeToStart = ko.observable("0");
     self.timeToEnd = ko.observable("24");
+    self.airlineCode = ko.observableArray(["AF"]);
 
 };
 

@@ -10,15 +10,32 @@ namespace MyTouristic.Models
         public List<Flight> Flights { get; set; }
         public double Price { get; set; }
 
-        public List<Offer> GetRandomOffer(string fromCity, string toCity, DateTime fromDate, DateTime toDate)
+        public List<Offer> GetRandomOffer(string fromCity, string toCity, DateTime fromDate, DateTime toDate, string searchType)
         {
             var listOffer = new List<Offer>();
             var random = new Random();
-            for (var i = 0; i < 10; i++ )
+
+            if (searchType == "byPrice")
             {
-                listOffer.Add(new Offer { Flights = new Flight().GetRandomFlight(fromCity, toCity, fromDate, toDate), Price = random.Next(2000, 5000) });
+                for (var i = 0; i < 10; i++)
+                {
+                    var fl = new List<Flight>();
+                    fl = new Flight().GetRandomFlight(fromCity, toCity, fromDate, toDate);
+                    System.Threading.Thread.Sleep(10);
+                    listOffer.Add(new Offer {Flights = fl, Price = random.Next(2000, 9000)});
+                }
             }
-                
+            else
+            {
+                var fl = new List<Flight>();
+                fl = new Flight().GetRandomFlightByShedule(fromCity, toCity, fromDate);
+                listOffer.Add(new Offer { Flights = fl, Price = random.Next(2000, 9000) });
+                System.Threading.Thread.Sleep(150);
+                fl = new Flight().GetRandomFlightByShedule(toCity, fromCity, toDate);
+                System.Threading.Thread.Sleep(150);
+                listOffer.Add(new Offer { Flights = fl, Price = random.Next(2000, 9000) });
+            }
+
             return listOffer.OrderBy(r=>r.Price).ToList();
         }
     }
