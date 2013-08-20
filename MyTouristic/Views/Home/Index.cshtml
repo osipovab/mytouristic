@@ -95,20 +95,21 @@
     </div>
     Вылет
     c <span data-bind="text: aviaFilterModel().fromTimeStart"></span>   
-    до <span data-bind="text: aviaFilterModel().fromTimeEnd"></span>
-    <div class="rangeSlider" data-bind="rangeSlider: { minFrom: aviaFilterModel().minFromTimeStart, maxTo: aviaFilterModel().maxFromTimeStart, from: aviaFilterModel().fromTimeStart, to: aviaFilterModel().fromTimeEnd }">
+    до <span data-bind="text:  aviaFilterModel().fromTimeEnd"></span>
+    <div class="rangeSlider" data-bind="rangeSlider: { minFrom: aviaFilterModel().minFromTimeStart(), maxTo: aviaFilterModel().maxFromTimeEnd(), from: aviaFilterModel().fromTimeStart(), to: aviaFilterModel().fromTimeEnd()}">
         <input type="text" disabled class="rangeSliderFrom" data-bind="value: aviaFilterModel().fromTimeStart" />
         <input type="text" disabled class="rangeSliderTo" data-bind="value: aviaFilterModel().fromTimeEnd" />
         <div class="slider"></div>
     </div>    
-    Прилёт
-    c <span data-bind="text: aviaFilterModel().toTimeStart"></span>   
-    до <span data-bind="text: aviaFilterModel().toTimeEnd"></span>
-    <div class="rangeSlider" data-bind="rangeSlider: { minFrom: aviaFilterModel().minToTimeStart, maxTo: aviaFilterModel().maxToTimeStart, from: aviaFilterModel().toTimeStart, to: aviaFilterModel().toTimeEnd }">
-        <input type="text" disabled class="rangeSliderFrom" data-bind="value: aviaFilterModel().toTimeStart" />
-        <input type="text" disabled class="rangeSliderTo" data-bind="value: aviaFilterModel().toTimeEnd" />
-        <div class="slider"></div>
-    </div>   
+
+     Прилёт
+@*    c <span data-bind="text: aviaFilterModel().toTimeStart"></span>   *@
+@*    до <span data-bind="text: aviaFilterModel().toTimeEnd"></span>*@
+@*    <div class="rangeSlider" data-bind="rangeSlider: { minFrom: aviaFilterModel().minToTimeStart, maxTo: aviaFilterModel().maxToTimeStart, from: aviaFilterModel().toTimeStart, to: aviaFilterModel().toTimeEnd }">*@
+@*        <input type="text" disabled class="rangeSliderFrom" data-bind="value: aviaFilterModel().toTimeStart" />*@
+@*        <input type="text" disabled class="rangeSliderTo" data-bind="value: aviaFilterModel().toTimeEnd" />*@
+@*        <div class="slider"></div>*@
+@*    </div>   *@
 
 </div>
 

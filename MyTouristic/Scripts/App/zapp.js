@@ -53,15 +53,24 @@ AviaProcessContainerModel = function() {
         }
         var offers = [];
         $.each(self.aviaPriceModel.offers(), function (index, offer) {
+            var visibleOffer = true;
             $.each(offer.flights(), function (index, flight) {
                 $.each(self.aviaFilterModel().airlines(), function (index, airline) {
-                    if (flight.airlineCode() === airline.code() && airline.checked()) {
-                        if (offers.indexOf(offer) < 0) {
-                            offers.push(offer);
-                        }
-                    }
+                    if (flight.airlineCode() === airline.code() && !airline.checked()) {
+                        visibleOffer = false;
+                    } 
                 });
             });
+            if (visibleOffer) {
+                if (offers.indexOf(offer) < 0) {
+                    offers.push(offer);
+                }
+            }
+//                    if (flight.airlineCode() === airline.code() && airline.checked()) {
+//                        if (offers.indexOf(offer) < 0) {
+//                       
+//                        }
+//                    }
         });
         return offers;
     });
@@ -126,6 +135,7 @@ AviaPriceModel = function () {
                     minToTimeStart: null,
                     maxToTimeEnd: null
                 };
+                
                 $.each(result, function (index, offer) {
                     var flights = [];
                     $.each(offer.Flights, function(index, flight) {
@@ -137,17 +147,17 @@ AviaPriceModel = function () {
                             });
                         }
                     });
-                    if (filterData.minFromTimeStart == null || filterData.minFromTimeStart > moment(flights[0].Date).hours()) {
-                        filterData.minFromTimeStart = moment(flights[0].Date).hours();
+                    if (filterData.minFromTimeStart == null || filterData.minFromTimeStart > moment(offer.Flights[0].Date).hours()) {
+                        filterData.minFromTimeStart = moment(offer.Flights[0].Date).hours();
                     }
-                    if (filterData.maxFromTimeEnd == null || filterData.maxFromTimeEnd < moment(flights[0].Date).hours()) {
-                        filterData.maxFromTimeEnd = moment(flights[0].Date).hours();
+                    if (filterData.maxFromTimeEnd == null || filterData.maxFromTimeEnd < moment(offer.Flights[0].Date).hours()) {
+                        filterData.maxFromTimeEnd = moment(offer.Flights[0].Date).hours();
                     }
-                    if (filterData.minToTimeStart == null || filterData.minToTimeStart > moment(flights[1].Date).hours()) {
-                        filterData.minToTimeStart = moment(flights[1].Date).hours();
+                    if (filterData.minToTimeStart == null || filterData.minToTimeStart > moment(offer.Flights[1].Date).hours()) {
+                        filterData.minToTimeStart = moment(offer.Flights[1].Date).hours();
                     }
-                    if (filterData.maxToTimeEnd == null || filterData.maxToTimeEnd < moment(flights[1].Date).hours()) {
-                        filterData.maxToTimeEnd = moment(flights[1].Date).hours();
+                    if (filterData.maxToTimeEnd == null || filterData.maxToTimeEnd < moment(offer.Flights[1].Date).hours()) {
+                        filterData.maxToTimeEnd = moment(offer.Flights[1].Date).hours();
                     }
                     self.offers.push(new Offer(flights, offer.Price));
                 });
@@ -208,11 +218,13 @@ Flight = function(airlineCode, number, date, time, route) {
 AviaFilterModel = function(filterData) {
     var self = this;
     
-    self.fromTimeStart = 0;
-    self.fromTimeEnd = 24;
+    self.airlines = filterData.airlines;
+    
+    self.fromTimeStart = ko.observable(filterData.minFromTimeStart);
+    self.fromTimeEnd = ko.observable(filterData.maxFromTimeEnd);
     self.toTimeStart = 0;
     self.toTimeEnd = 24;
-    self.airlines = filterData.airlines;
+    
     self.minFromTimeStart = filterData.minFromTimeStart;
     self.maxFromTimeEnd = filterData.maxFromTimeEnd;
     self.minToTimeStart = filterData.minToTimeStart;
