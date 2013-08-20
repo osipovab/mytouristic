@@ -91,7 +91,7 @@
 <div class="rightBlock" data-bind="if: aviaFilterModel">
     Авиакомпания <br />
     <div data-bind="foreach: {data: aviaFilterModel().airlines, as: 'airline'}" >
-        <input type="checkbox" data-bind="value:airline.code, checked:airline.checked" /> <span data-bind="text:airline.code"></span>
+        <input type="checkbox" data-bind="value:airline.code, checked:airline.checked" /> <span data-bind="text:airline.code"></span><br />
     </div>
     Вылет
     c <span data-bind="text: aviaFilterModel().fromTimeStart"></span>   
