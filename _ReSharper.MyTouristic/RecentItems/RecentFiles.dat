@@ -17,11 +17,11 @@
     <File id="DC6D6C78-F1AF-4B9A-905D-B08A71382EAE/d:Scripts/d:Lib/f:perpetuum.knockout.js" caret="0" fromTop="0" />
     <File id="DC6D6C78-F1AF-4B9A-905D-B08A71382EAE/d:Content/f:Mytouristic.css" caret="544" fromTop="17" />
     <File id="DC6D6C78-F1AF-4B9A-905D-B08A71382EAE/d:Models/f:Offer.cs" caret="684" fromTop="22" />
-    <File id="DC6D6C78-F1AF-4B9A-905D-B08A71382EAE/d:Views/d:Home/f:Index.cshtml" caret="1097" fromTop="13" />
     <File id="DC6D6C78-F1AF-4B9A-905D-B08A71382EAE/d:Controllers/f:SearchController.cs" caret="552" fromTop="16" />
     <File id="DC6D6C78-F1AF-4B9A-905D-B08A71382EAE/d:Scripts/d:App/f:ko.bindingHandlers.js" caret="2132" fromTop="29" />
     <File id="DC6D6C78-F1AF-4B9A-905D-B08A71382EAE/d:Models/f:Flight.cs" caret="549" fromTop="3" />
-    <File id="DC6D6C78-F1AF-4B9A-905D-B08A71382EAE/d:Scripts/d:App/f:zapp.js" caret="2263" fromTop="16" />
+    <File id="DC6D6C78-F1AF-4B9A-905D-B08A71382EAE/d:Views/d:Home/f:Index.cshtml" caret="1097" fromTop="13" />
+    <File id="DC6D6C78-F1AF-4B9A-905D-B08A71382EAE/d:Scripts/d:App/f:zapp.js" caret="2354" fromTop="16" />
   </RecentFiles>
   <RecentEdits>
     <File id="DC6D6C78-F1AF-4B9A-905D-B08A71382EAE/d:Controllers/f:HomeController.cs" caret="21" fromTop="0" />

@@ -29,7 +29,7 @@
     откуда <br />
     <select id="fromCity" data-bind="options: aviaFormModel.cities, selectedOptions: aviaFormModel.fromCity"></select><br />
     куда<br />
-    <select id="toCity" data-bind="options: aviaFormModel.cities, selectedOptions: aviaFormModel.toCity()"></select><br />
+    <select id="toCity" data-bind="options: aviaFormModel.cities, selectedOptions: aviaFormModel.toCity"></select><br />
     дата вылета<br />
     <input type="text" data-bind="datepicker: aviaFormModel.fromDate" /><br />
     дата прилёта<br />
@@ -72,7 +72,7 @@
     
     <div data-bind="visible: aviaFormModel.searchType() == 'byPrice' && aviaPriceModel.offers().length > 0">
         ПОИСК ПО ЦЕНЕ:
-        <div data-bind="foreach: {data: aviaPriceModel.offers, as: 'offer'}">
+        <div data-bind="foreach: {data: filteredOffers, as: 'offer'}">
             <div class="offer">
                 <button class="btnPrice" data-bind="text: 'купить за:' + offer.price()" ></button>
                 <div data-bind="foreach: {data: offer.flights, as: 'flight'}" >
@@ -88,28 +88,27 @@
 
 
 
-<div class="rightBlock">
+<div class="rightBlock" data-bind="if: aviaFilterModel">
     Авиакомпания <br />
-    <div data-bind="foreach: {data: aviaFilterModel.airlineCode, as: 'code'}" >
-        <input type="checkbox" data-bind="value:code, checked:true" /> <span data-bind="text:code"></span>
+    <div data-bind="foreach: {data: aviaFilterModel().airlines, as: 'airline'}" >
+        <input type="checkbox" data-bind="value:airline.code, checked:airline.checked" /> <span data-bind="text:airline.code"></span>
     </div>
     Вылет
-    c <span data-bind="text: aviaFilterModel.timeFromStart"></span>   
-    до <span data-bind="text: aviaFilterModel.timeFromEnd"></span>
-    <div class="rangeSlider" data-bind="rangeSlider: { minFrom: 0, maxTo: 24, from: 0, to: 24 }">
-        <input type="text" disabled class="rangeSliderFrom" data-bind="value: aviaFilterModel.timeFromStart" />
-        <input type="text" disabled class="rangeSliderTo" data-bind="value: aviaFilterModel.timeFromEnd" />
+    c <span data-bind="text: aviaFilterModel().fromTimeStart"></span>   
+    до <span data-bind="text: aviaFilterModel().fromTimeEnd"></span>
+    <div class="rangeSlider" data-bind="rangeSlider: { minFrom: aviaFilterModel().minFromTimeStart, maxTo: aviaFilterModel().maxFromTimeStart, from: aviaFilterModel().fromTimeStart, to: aviaFilterModel().fromTimeEnd }">
+        <input type="text" disabled class="rangeSliderFrom" data-bind="value: aviaFilterModel().fromTimeStart" />
+        <input type="text" disabled class="rangeSliderTo" data-bind="value: aviaFilterModel().fromTimeEnd" />
         <div class="slider"></div>
     </div>    
     Прилёт
-    c <span data-bind="text: aviaFilterModel.timeToStart"></span>   
-    до <span data-bind="text: aviaFilterModel.timeToEnd"></span>
-
-    <div class="rangeSlider" data-bind="rangeSlider: { minFrom: 0, maxTo: 24, from: 0, to: 24 }">
-        <input type="text" disabled class="rangeSliderFrom" data-bind="value: aviaFilterModel.timeToStart" />
-        <input type="text" disabled class="rangeSliderTo" data-bind="value: aviaFilterModel.timeToEnd" />
+    c <span data-bind="text: aviaFilterModel().toTimeStart"></span>   
+    до <span data-bind="text: aviaFilterModel().toTimeEnd"></span>
+    <div class="rangeSlider" data-bind="rangeSlider: { minFrom: aviaFilterModel().minToTimeStart, maxTo: aviaFilterModel().maxToTimeStart, from: aviaFilterModel().toTimeStart, to: aviaFilterModel().toTimeEnd }">
+        <input type="text" disabled class="rangeSliderFrom" data-bind="value: aviaFilterModel().toTimeStart" />
+        <input type="text" disabled class="rangeSliderTo" data-bind="value: aviaFilterModel().toTimeEnd" />
         <div class="slider"></div>
-    </div>    
+    </div>   
 
 </div>
 
