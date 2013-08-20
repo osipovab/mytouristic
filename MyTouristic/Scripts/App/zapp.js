@@ -10,15 +10,17 @@ AviaProcessContainerModel = function() {
     self.init = function () {
         self.aviaFormModel.init();
     };
-    self.search = function () {
+    
+
+
+    self.search = function () {        
+
         self.aviaFilterModel(null);
         //if (self.validation()) {
         if (self.aviaFormModel.searchType() == "byPrice") {
                 var fDate = self.aviaFormModel.fromDate().getFullYear() + '-' + (self.aviaFormModel.fromDate().getMonth() + 1) + '-' + self.aviaFormModel.fromDate().getDate();
                 var tDate = self.aviaFormModel.toDate().getFullYear() + '-' + (self.aviaFormModel.toDate().getMonth() + 1) + '-' + self.aviaFormModel.toDate().getDate();
                 self.aviaPriceModel.search(self.aviaFormModel.fromCity(), self.aviaFormModel.toCity(), fDate, tDate, self.updateFilter);
-
-               
         } else {
                 var fDate = self.aviaFormModel.fromDate().getFullYear() + '-' + (self.aviaFormModel.fromDate().getMonth() + 1) + '-' + self.aviaFormModel.fromDate().getDate();
                 var tDate = self.aviaFormModel.toDate().getFullYear() + '-' + (self.aviaFormModel.toDate().getMonth() + 1) + '-' + self.aviaFormModel.toDate().getDate();
@@ -47,6 +49,68 @@ AviaProcessContainerModel = function() {
         self.aviaFilterModel(ko.mapping.fromJS(filterModel));
     };
 
+    self.filteredFlightsFrom = ko.computed(function() {
+        if (!self.aviaFilterModel()) {
+            return self.aviaScheduleModel.flightFrom();
+        }
+        var flightFrom = [];
+
+        $.each(self.aviaScheduleModel.flightFrom(), function (index, flight) {
+            var visible = true;
+            $.each(self.aviaFilterModel().airlines(), function (index, airline) {
+                if (flight.airlineCode() === airline.code() && !airline.checked()) {
+                    visible = false;
+                }
+            });
+            
+            if (parseInt(flight.time().substring(0, 2)) <= self.aviaFilterModel().fromTimeStart()) {
+                visible = false;
+            }
+
+            if (parseInt(flight.time().substring(0, 2)) >= self.aviaFilterModel().fromTimeEnd()) {
+                visible = false;
+            }
+            
+            if (visible) {
+                if (flightFrom.indexOf(flight) < 0) {
+                    flightFrom.push(flight);
+                }
+            }
+        });
+        return flightFrom;
+    });
+    
+    self.filteredFlightsTo = ko.computed(function () {
+        if (!self.aviaFilterModel()) {
+            return self.aviaScheduleModel.flightTo();
+        }
+        var flightTo = [];
+
+        $.each(self.aviaScheduleModel.flightTo(), function (index, flight) {
+            var visible = true;
+            $.each(self.aviaFilterModel().airlines(), function (index, airline) {
+                if (flight.airlineCode() === airline.code() && !airline.checked()) {
+                    visible = false;
+                }
+            });
+
+            if (parseInt(flight.time().substring(0, 2)) <= self.aviaFilterModel().toTimeStart()) {
+                visible = false;
+            }
+
+            if (parseInt(flight.time().substring(0, 2)) >= self.aviaFilterModel().toTimeEnd()) {
+                visible = false;
+            }
+
+            if (visible) {
+                if (flightTo.indexOf(flight) < 0) {
+                    flightTo.push(flight);
+                }
+            }
+        });
+        return flightTo;
+    });
+
     self.filteredOffers = ko.computed(function () {
         if (!self.aviaFilterModel()) {
             return self.aviaPriceModel.offers();
@@ -61,16 +125,28 @@ AviaProcessContainerModel = function() {
                     } 
                 });
             });
+            
+            if (parseInt(offer.flights()[0].time().substring(0, 2)) < self.aviaFilterModel().fromTimeStart() ) {
+                visibleOffer = false;
+            }
+            
+            if (parseInt(offer.flights()[0].time().substring(0, 2)) >= self.aviaFilterModel().fromTimeEnd()) {
+                visibleOffer = false;
+            }
+
+            if (parseInt(offer.flights()[1].time().substring(0, 2)) < self.aviaFilterModel().toTimeStart()) {
+                visibleOffer = false;
+            }
+
+            if (parseInt(offer.flights()[1].time().substring(0, 2)) >= self.aviaFilterModel().toTimeEnd()) {
+                visibleOffer = false;
+            }
+
             if (visibleOffer) {
                 if (offers.indexOf(offer) < 0) {
                     offers.push(offer);
                 }
             }
-//                    if (flight.airlineCode() === airline.code() && airline.checked()) {
-//                        if (offers.indexOf(offer) < 0) {
-//                       
-//                        }
-//                    }
         });
         return offers;
     });
@@ -175,7 +251,7 @@ AviaScheduleModel = function() {
     self.flightFrom = ko.observableArray([]);
     self.flightTo = ko.observableArray([]);
     
-    self.search = function (fromCity, toCity, fromDate, toDate) {
+    self.search = function (fromCity, toCity, fromDate, toDate, callback) {
         $.ajax({
             url: "api/Search/SearchBySchedule",
             dataType: 'json',
@@ -183,12 +259,44 @@ AviaScheduleModel = function() {
             success: function (result) {
                     self.flightFrom.removeAll();
                     self.flightTo.removeAll();
+                    var filterData = {
+                        airlines: [],
+                        minFromTimeStart: null,
+                        maxFromTimeEnd: null,
+                        minToTimeStart: null,
+                        maxToTimeEnd: null
+                    };
                     $.each(result[0].Flights, function (index, flight) {
                         self.flightFrom.push(new Flight(flight.AirlineCode, flight.Number, moment(flight.Date).format('DD.MM.YYYY'), moment(flight.Date).format('HH:mm'), flight.Route));
+                        if (_.some(filterData.airlines, function (airline) { return airline.code == flight.AirlineCode; }) == false) {
+                            filterData.airlines.push({
+                                code: flight.AirlineCode,
+                                checked: true
+                            });
+                        }
+                        if (filterData.minFromTimeStart == null || filterData.minFromTimeStart > moment(flight.Date).hours()) {
+                            filterData.minFromTimeStart = moment(flight.Date).hours();
+                        }
+                        if (filterData.maxFromTimeEnd == null || filterData.maxFromTimeEnd < moment(flight.Date).hours()) {
+                            filterData.maxFromTimeEnd = moment(flight.Date).hours();
+                        }
                     });  
                     $.each(result[1].Flights, function (index, flight) {
                         self.flightTo.push(new Flight(flight.AirlineCode, flight.Number, moment(flight.Date).format('DD.MM.YYYY'), moment(flight.Date).format('HH:mm'), flight.Route));
+                        if (_.some(filterData.airlines, function (airline) { return airline.code == flight.AirlineCode; }) == false) {
+                            filterData.airlines.push({
+                                code: flight.AirlineCode,
+                                checked: true
+                            });
+                        }
+                        if (filterData.minToTimeStart == null || filterData.minToTimeStart > moment(flight.Date).hours()) {
+                            filterData.minToTimeStart = moment(flight.Date).hours();
+                        }
+                        if (filterData.maxToTimeEnd == null || filterData.maxToTimeEnd < moment(flight.Date).hours()) {
+                            filterData.maxToTimeEnd = moment(flight.Date).hours();
+                        }
                     });
+                  callback(filterData);
             },
             error: function () { alert("Ошибка при поиске расписанию"); }
         });
@@ -222,13 +330,36 @@ AviaFilterModel = function(filterData) {
     
     self.fromTimeStart = ko.observable(filterData.minFromTimeStart);
     self.fromTimeEnd = ko.observable(filterData.maxFromTimeEnd);
-    self.toTimeStart = 0;
-    self.toTimeEnd = 24;
+    self.toTimeStart = ko.observable(filterData.minToTimeStart);
+    self.toTimeEnd = ko.observable(filterData.maxToTimeEnd);
     
     self.minFromTimeStart = filterData.minFromTimeStart;
     self.maxFromTimeEnd = filterData.maxFromTimeEnd;
     self.minToTimeStart = filterData.minToTimeStart;
     self.maxToTimeEnd = filterData.maxToTimeEnd;
+
+    self.fromTimeStartFull = ko.computed(function () {
+        return fullHourFormat(self.fromTimeStart());
+    });
+    
+    self.fromTimeEndFull = ko.computed(function () {
+        return fullHourFormat(self.fromTimeEnd());
+    });
+    
+    self.toTimeStartFull = ko.computed(function () {
+        return fullHourFormat(self.toTimeStart());
+    });
+    
+    self.toTimeEndFull = ko.computed(function () {
+        return fullHourFormat(self.toTimeEnd());
+    });
+
+
+    function fullHourFormat(hour) {
+        if (hour > 9) return hour;
+        else return "0" + hour;
+    }
+
 };
 
 $(function () {

@@ -45,11 +45,35 @@
     <div id="textInfo">
         Нажмите кнопку найти для  отображения результатов
     </div>
-    <div data-bind="visible: aviaFormModel.searchType() == 'bySchedule' && aviaScheduleModel.flightFrom().length > 0">
+    
+    <div id="spinningTextG">
+<div id="spinningTextG_1" class="spinningTextG">
+L</div>
+<div id="spinningTextG_2" class="spinningTextG">
+o</div>
+<div id="spinningTextG_3" class="spinningTextG">
+a</div>
+<div id="spinningTextG_4" class="spinningTextG">
+d</div>
+<div id="spinningTextG_5" class="spinningTextG">
+i</div>
+<div id="spinningTextG_6" class="spinningTextG">
+n</div>
+<div id="spinningTextG_7" class="spinningTextG">
+g</div>
+<div id="spinningTextG_8" class="spinningTextG">
+.</div>
+<div id="spinningTextG_9" class="spinningTextG">
+.</div>
+<div id="spinningTextG_10" class="spinningTextG">
+.</div>
+</div> 
+
+    <div data-bind="visible: aviaFormModel.searchType() == 'bySchedule' && aviaScheduleModel.flightFrom().length > 0" id="sShedule">
         ПОИСК ПО РАСПИСАНИЮ:
         <span data-bind="text: aviaFormModel.fromCity()"> </span> -  <span data-bind="text: aviaFormModel.toCity()"> </span>
         <span data-bind="text:  moment(aviaFormModel.fromDate()).format('DD.MM.YYYY')"> </span>
-        <div data-bind="foreach: {data: aviaScheduleModel.flightFrom, as: 'flight'}">
+        <div data-bind="foreach: {data: filteredFlightsFrom, as: 'flight'}">
             <div  class="offer">
                 <span data-bind="text: flight.airlineCode"></span>-<span data-bind="text: flight.number"></span>
                 <span data-bind="text: flight.date"></span>
@@ -60,7 +84,7 @@
         
         <span data-bind="text: aviaFormModel.toCity()"> </span> -  <span data-bind="text: aviaFormModel.fromCity()"> </span>
         <span data-bind="text:  moment(aviaFormModel.toDate()).format('DD.MM.YYYY')"> </span>
-        <div data-bind="foreach: {data: aviaScheduleModel.flightTo, as: 'flight'}">
+        <div data-bind="foreach: {data: filteredFlightsTo, as: 'flight'}">
             <div  class="offer">
                 <span data-bind="text: flight.airlineCode"></span>-<span data-bind="text: flight.number"></span>
                 <span data-bind="text: flight.date"></span>
@@ -70,7 +94,7 @@
         </div>
     </div>
     
-    <div data-bind="visible: aviaFormModel.searchType() == 'byPrice' && aviaPriceModel.offers().length > 0">
+    <div data-bind="visible: aviaFormModel.searchType() == 'byPrice' && aviaPriceModel.offers().length > 0" id="sPrice">
         ПОИСК ПО ЦЕНЕ:
         <div data-bind="foreach: {data: filteredOffers, as: 'offer'}">
             <div class="offer">
@@ -94,22 +118,22 @@
         <input type="checkbox" data-bind="value:airline.code, checked:airline.checked" /> <span data-bind="text:airline.code"></span><br />
     </div>
     Вылет
-    c <span data-bind="text: aviaFilterModel().fromTimeStart"></span>   
-    до <span data-bind="text:  aviaFilterModel().fromTimeEnd"></span>
+    c <span data-bind="text: aviaFilterModel().fromTimeStartFull"></span>   
+    до <span data-bind="text:  aviaFilterModel().fromTimeEndFull"></span>
     <div class="rangeSlider" data-bind="rangeSlider: { minFrom: aviaFilterModel().minFromTimeStart(), maxTo: aviaFilterModel().maxFromTimeEnd(), from: aviaFilterModel().fromTimeStart(), to: aviaFilterModel().fromTimeEnd()}">
         <input type="text" disabled class="rangeSliderFrom" data-bind="value: aviaFilterModel().fromTimeStart" />
         <input type="text" disabled class="rangeSliderTo" data-bind="value: aviaFilterModel().fromTimeEnd" />
         <div class="slider"></div>
     </div>    
 
-     Прилёт
-@*    c <span data-bind="text: aviaFilterModel().toTimeStart"></span>   *@
-@*    до <span data-bind="text: aviaFilterModel().toTimeEnd"></span>*@
-@*    <div class="rangeSlider" data-bind="rangeSlider: { minFrom: aviaFilterModel().minToTimeStart, maxTo: aviaFilterModel().maxToTimeStart, from: aviaFilterModel().toTimeStart, to: aviaFilterModel().toTimeEnd }">*@
-@*        <input type="text" disabled class="rangeSliderFrom" data-bind="value: aviaFilterModel().toTimeStart" />*@
-@*        <input type="text" disabled class="rangeSliderTo" data-bind="value: aviaFilterModel().toTimeEnd" />*@
-@*        <div class="slider"></div>*@
-@*    </div>   *@
+    Прилёт
+    c <span data-bind="text: aviaFilterModel().toTimeStartFull"></span>   
+    до <span data-bind="text:  aviaFilterModel().toTimeEndFull"></span>
+    <div class="rangeSlider" data-bind="rangeSlider: { minFrom: aviaFilterModel().minToTimeStart(), maxTo: aviaFilterModel().maxToTimeEnd(), from: aviaFilterModel().toTimeStart(), to: aviaFilterModel().toTimeEnd()}">
+        <input type="text" disabled class="rangeSliderFrom" data-bind="value: aviaFilterModel().toTimeStart" />
+        <input type="text" disabled class="rangeSliderTo" data-bind="value: aviaFilterModel().toTimeEnd" />
+        <div class="slider"></div>
+    </div>  
 
 </div>
 

@@ -21,8 +21,8 @@ namespace MyTouristic.Models
                 {
                     var fl = new List<Flight>();
                     fl = new Flight().GetRandomFlight(fromCity, toCity, fromDate, toDate);
-                    System.Threading.Thread.Sleep(10);
                     listOffer.Add(new Offer {Flights = fl, Price = random.Next(2000, 9000)});
+                    System.Threading.Thread.Sleep(10);
                 }
 
                 return listOffer.OrderBy(r => r.Price).ToList();
@@ -32,9 +32,9 @@ namespace MyTouristic.Models
                 var fl = new List<Flight>();
                 fl = new Flight().GetRandomFlightByShedule(fromCity, toCity, fromDate);
                 listOffer.Add(new Offer { Flights = fl, Price = random.Next(2000, 9000) });
-                System.Threading.Thread.Sleep(150);
+                System.Threading.Thread.Sleep(10);
                 fl = new Flight().GetRandomFlightByShedule(toCity, fromCity, toDate);
-                System.Threading.Thread.Sleep(150);
+                System.Threading.Thread.Sleep(10);
                 listOffer.Add(new Offer { Flights = fl, Price = random.Next(2000, 9000) });
                 return listOffer;
             }

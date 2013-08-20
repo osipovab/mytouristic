@@ -13,7 +13,7 @@ namespace MyTouristic
                 .Include("~/Scripts/App/ko.bindingHandlers.js")
                 .Include("~/Scripts/App/zapp.js"));
             bundles.Add(new ScriptBundle("~/bundles/app").IncludeDirectory("~/Scripts/App", "*.js", true));
-            bundles.Add(new StyleBundle("~/Content/css").Include("~/Content/site.css", "~/Content/Mytouristic.css"));
+            bundles.Add(new StyleBundle("~/Content/css").Include("~/Content/site.css", "~/Content/Mytouristic.css", "~/Content/Loader.css", "~/Content/jquery-ui.css"));
             bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
                         "~/Content/themes/base/jquery.ui.core.css",
                         "~/Content/themes/base/jquery.ui.resizable.css",
