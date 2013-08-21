@@ -14,17 +14,20 @@ AviaProcessContainerModel = function() {
 
 
     self.search = function () {        
-
+        $('#dim').css('display', 'block');
+        
         self.aviaFilterModel(null);
         //if (self.validation()) {
         if (self.aviaFormModel.searchType() == "byPrice") {
                 var fDate = self.aviaFormModel.fromDate().getFullYear() + '-' + (self.aviaFormModel.fromDate().getMonth() + 1) + '-' + self.aviaFormModel.fromDate().getDate();
                 var tDate = self.aviaFormModel.toDate().getFullYear() + '-' + (self.aviaFormModel.toDate().getMonth() + 1) + '-' + self.aviaFormModel.toDate().getDate();
                 self.aviaPriceModel.search(self.aviaFormModel.fromCity(), self.aviaFormModel.toCity(), fDate, tDate, self.updateFilter);
+                self.aviaScheduleModel = new AviaScheduleModel();
         } else {
                 var fDate = self.aviaFormModel.fromDate().getFullYear() + '-' + (self.aviaFormModel.fromDate().getMonth() + 1) + '-' + self.aviaFormModel.fromDate().getDate();
                 var tDate = self.aviaFormModel.toDate().getFullYear() + '-' + (self.aviaFormModel.toDate().getMonth() + 1) + '-' + self.aviaFormModel.toDate().getDate();
                 self.aviaScheduleModel.search(self.aviaFormModel.fromCity(), self.aviaFormModel.toCity(), fDate, tDate, self.updateFilter);
+                self.aviaPriceModel = new AviaPriceModel();
             }
         //}
     };
@@ -193,17 +196,20 @@ AviaFormModel = function () {
 
 AviaPriceModel = function () {
     var self = this;
-
     self.offers = ko.observableArray([]);
+
+    var delay = 3000;
     
     self.search = function (fromCity, toCity, fromDate, toDate, callback) {
+        self.offers.removeAll();
 
         $.ajax({
             url: "api/Search/SearchByPrice",
             dataType: 'json',
-            data: ({ 'fromCity': fromCity, 'toCity': toCity, 'fromDate': fromDate, 'toDate' : toDate }),
-            success: function (result) {
-                self.offers.removeAll();
+            data: ({ 'fromCity': fromCity, 'toCity': toCity, 'fromDate': fromDate, 'toDate': toDate })
+        }).done(function (result) {
+            self.offers.removeAll();
+            setTimeout(function() {
                 var filterData = {
                     airlines: [],
                     minFromTimeStart: null,
@@ -211,12 +217,12 @@ AviaPriceModel = function () {
                     minToTimeStart: null,
                     maxToTimeEnd: null
                 };
-                
-                $.each(result, function (index, offer) {
+
+                $.each(result, function(index, offer) {
                     var flights = [];
                     $.each(offer.Flights, function(index, flight) {
                         flights.push(new Flight(flight.AirlineCode, flight.Number, moment(flight.Date).format('DD.MM.YYYY'), moment(flight.Date).format('HH:mm'), flight.Route));
-                        if (_.some(filterData.airlines, function(airline) { return airline.code == flight.AirlineCode; }) == false){
+                        if (_.some(filterData.airlines, function(airline) { return airline.code == flight.AirlineCode; }) == false) {
                             filterData.airlines.push({
                                 code: flight.AirlineCode,
                                 checked: true
@@ -238,9 +244,12 @@ AviaPriceModel = function () {
                     self.offers.push(new Offer(flights, offer.Price));
                 });
                 callback(filterData);
-            },
-            error: function() { alert("Ошибка при поиске по цене"); }
-        });
+            }, delay);
+        }).always(function() {
+            setTimeout(function() {
+                $('#dim').css('display', 'none');
+            }, delay);
+        }).fail(function() { alert("Ошибка при поиске по цене"); });
     };
 };
 
@@ -250,55 +259,64 @@ AviaScheduleModel = function() {
     
     self.flightFrom = ko.observableArray([]);
     self.flightTo = ko.observableArray([]);
+
+    var delay = 3000;
     
     self.search = function (fromCity, toCity, fromDate, toDate, callback) {
         $.ajax({
             url: "api/Search/SearchBySchedule",
             dataType: 'json',
-            data: ({ 'fromCity': fromCity, 'toCity': toCity, 'fromDate': fromDate, 'toDate': toDate }),
-            success: function (result) {
-                    self.flightFrom.removeAll();
-                    self.flightTo.removeAll();
-                    var filterData = {
-                        airlines: [],
-                        minFromTimeStart: null,
-                        maxFromTimeEnd: null,
-                        minToTimeStart: null,
-                        maxToTimeEnd: null
-                    };
-                    $.each(result[0].Flights, function (index, flight) {
-                        self.flightFrom.push(new Flight(flight.AirlineCode, flight.Number, moment(flight.Date).format('DD.MM.YYYY'), moment(flight.Date).format('HH:mm'), flight.Route));
-                        if (_.some(filterData.airlines, function (airline) { return airline.code == flight.AirlineCode; }) == false) {
-                            filterData.airlines.push({
-                                code: flight.AirlineCode,
-                                checked: true
-                            });
-                        }
-                        if (filterData.minFromTimeStart == null || filterData.minFromTimeStart > moment(flight.Date).hours()) {
-                            filterData.minFromTimeStart = moment(flight.Date).hours();
-                        }
-                        if (filterData.maxFromTimeEnd == null || filterData.maxFromTimeEnd < moment(flight.Date).hours()) {
-                            filterData.maxFromTimeEnd = moment(flight.Date).hours();
-                        }
-                    });  
-                    $.each(result[1].Flights, function (index, flight) {
-                        self.flightTo.push(new Flight(flight.AirlineCode, flight.Number, moment(flight.Date).format('DD.MM.YYYY'), moment(flight.Date).format('HH:mm'), flight.Route));
-                        if (_.some(filterData.airlines, function (airline) { return airline.code == flight.AirlineCode; }) == false) {
-                            filterData.airlines.push({
-                                code: flight.AirlineCode,
-                                checked: true
-                            });
-                        }
-                        if (filterData.minToTimeStart == null || filterData.minToTimeStart > moment(flight.Date).hours()) {
-                            filterData.minToTimeStart = moment(flight.Date).hours();
-                        }
-                        if (filterData.maxToTimeEnd == null || filterData.maxToTimeEnd < moment(flight.Date).hours()) {
-                            filterData.maxToTimeEnd = moment(flight.Date).hours();
-                        }
-                    });
-                  callback(filterData);
-            },
-            error: function () { alert("Ошибка при поиске расписанию"); }
+            data: ({ 'fromCity': fromCity, 'toCity': toCity, 'fromDate': fromDate, 'toDate': toDate })
+        }).done(function(result) {
+            self.flightFrom.removeAll();
+            self.flightTo.removeAll();
+
+            setTimeout(function() {
+                var filterData = {
+                    airlines: [],
+                    minFromTimeStart: null,
+                    maxFromTimeEnd: null,
+                    minToTimeStart: null,
+                    maxToTimeEnd: null
+                };
+                $.each(result[0].Flights, function(index, flight) {
+                    self.flightFrom.push(new Flight(flight.AirlineCode, flight.Number, moment(flight.Date).format('DD.MM.YYYY'), moment(flight.Date).format('HH:mm'), flight.Route));
+                    if (_.some(filterData.airlines, function(airline) { return airline.code == flight.AirlineCode; }) == false) {
+                        filterData.airlines.push({
+                            code: flight.AirlineCode,
+                            checked: true
+                        });
+                    }
+                    if (filterData.minFromTimeStart == null || filterData.minFromTimeStart > moment(flight.Date).hours()) {
+                        filterData.minFromTimeStart = moment(flight.Date).hours();
+                    }
+                    if (filterData.maxFromTimeEnd == null || filterData.maxFromTimeEnd < moment(flight.Date).hours()) {
+                        filterData.maxFromTimeEnd = moment(flight.Date).hours();
+                    }
+                });
+                $.each(result[1].Flights, function(index, flight) {
+                    self.flightTo.push(new Flight(flight.AirlineCode, flight.Number, moment(flight.Date).format('DD.MM.YYYY'), moment(flight.Date).format('HH:mm'), flight.Route));
+                    if (_.some(filterData.airlines, function(airline) { return airline.code == flight.AirlineCode; }) == false) {
+                        filterData.airlines.push({
+                            code: flight.AirlineCode,
+                            checked: true
+                        });
+                    }
+                    if (filterData.minToTimeStart == null || filterData.minToTimeStart > moment(flight.Date).hours()) {
+                        filterData.minToTimeStart = moment(flight.Date).hours();
+                    }
+                    if (filterData.maxToTimeEnd == null || filterData.maxToTimeEnd < moment(flight.Date).hours()) {
+                        filterData.maxToTimeEnd = moment(flight.Date).hours();
+                    }
+                });
+                callback(filterData);
+            }, delay);
+        }).fail(function() {
+            alert("Ошибка при поиске расписанию");
+        }).always(function() {
+            setTimeout(function() {
+                $('#dim').css('display', 'none');
+            }, delay);
         });
     };
 };

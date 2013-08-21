@@ -43,10 +43,10 @@
 
 <div class="centerBlock">
     <div id="textInfo">
-        Нажмите кнопку найти для  отображения результатов
+        Нажмите кнопку найти для  отображения результатов поиска
     </div>
-    
-    <div id="spinningTextG">
+<div id="dim">    
+<div id="spinningTextG">
 <div id="spinningTextG_1" class="spinningTextG">
 L</div>
 <div id="spinningTextG_2" class="spinningTextG">
@@ -68,9 +68,10 @@ g</div>
 <div id="spinningTextG_10" class="spinningTextG">
 .</div>
 </div> 
+</div>
 
     <div data-bind="visible: aviaFormModel.searchType() == 'bySchedule' && aviaScheduleModel.flightFrom().length > 0" id="sShedule">
-        ПОИСК ПО РАСПИСАНИЮ:
+        ПОИСК ПО РАСПИСАНИЮ:<br />
         <span data-bind="text: aviaFormModel.fromCity()"> </span> -  <span data-bind="text: aviaFormModel.toCity()"> </span>
         <span data-bind="text:  moment(aviaFormModel.fromDate()).format('DD.MM.YYYY')"> </span>
         <div data-bind="foreach: {data: filteredFlightsFrom, as: 'flight'}">
