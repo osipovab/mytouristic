@@ -7,13 +7,13 @@
 .centerBlock
 {
     float: left;
-    width: 500px;
+    width: 550px;
 }
 
  .rightBlock {
     float: left;
      padding-left: 20px;
-    width: 200px;
+    width: 180px;
 }
 
 .rangeSlider {
@@ -26,16 +26,54 @@
     margin: 0;
 }
 
-.offer {
+.offer2 {
     background: white;
     border: 1px solid black;
     margin-bottom: 5px;
-    
     padding: 5px;
     font-size: 12px;
 }
 
+.offer {
+    background-color: white;
+    padding: 5px;
+    margin-top: 10px;
+    -moz-border-radius: 1em;
+    -webkit-border-radius: 1em;
+    border-radius: 1em;
+    opacity: 0.9;
+}
 .btnPrice {
-    
+    font-size: 11px;
     float: left;
+    -moz-border-radius: 1em;
+    -webkit-border-radius: 1em;
+    border-radius: 1em;
+    opacity: 0.9;
+}
+
+.header{
+    margin-bottom: 10px;
+    margin-top: 10px;
+    background-color: #f6a828;
+    text-align: left;
+    color: black;
+    padding: 5px;
+    padding-left: 15px;
+    -moz-border-radius: 1em;
+    -webkit-border-radius: 1em;
+    border-radius: 1em;
+    opacity: 0.9;
+    width: 100%;
+}
+
+select {
+    width: 155px;
+}
+
+.boldsize {
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 5px;
+    color: black;
 }
