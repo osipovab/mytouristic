@@ -1,27 +1,13 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Авиабилеты";
 }
 @section featured {
     <section class="featured">
         <div class="content-wrapper">
-            <hgroup class="title">
-                <h1>@ViewBag.Title.</h1>
-                <h2>@ViewBag.Message</h2>
-            </hgroup>
-            <p>
-                To learn more about ASP.NET MVC visit
-                <a href="http://asp.net/mvc" title="ASP.NET MVC Website">http://asp.net/mvc</a>.
-                The page features <mark>videos, tutorials, and samples</mark> to help you get the most from ASP.NET MVC.
-                If you have any questions about ASP.NET MVC visit
-                <a href="http://forums.asp.net/1146.aspx/1?MVC" title="ASP.NET MVC Forum">our forums</a>.
-            </p>
+            <h2>Добро пожаловать на самый лучший сайт в мире по поиску авиабилетов :)</h2>
         </div>
     </section>
 }
-
-
-
-
 
 <div class="leftBlock">
    <h3>Поиск авиабилетов</h3>
@@ -46,8 +32,7 @@
 
     <div data-bind="visible: aviaFormModel.searchType() == 'bySchedule' && aviaScheduleModel.flightFrom().length > 0" id="sShedule">
         <div class="header">Поиск по расписанию</div>
-        <span class="boldsize" data-bind="text: aviaFormModel.fromCity()"> </span> -  <span class="boldsize" data-bind="text: aviaFormModel.toCity()"> </span>
-        <span class="boldsize" data-bind="text:  moment(aviaFormModel.fromDate()).format('DD.MM.YYYY')"> </span>
+        <span class="boldsize" data-bind="text:aviaScheduleModel.routeFrom()"> </span> 
         <div data-bind="foreach: {data: filteredFlightsFrom, as: 'flight'}">
             <div  class="offer">
                 <span data-bind="text: flight.airlineCode"></span>-<span data-bind="text: flight.number"></span>
@@ -57,8 +42,7 @@
             </div>
         </div>
         
-        <span  class="boldsize" data-bind="text: aviaFormModel.toCity()"> </span> -  <span class="boldsize" data-bind="text: aviaFormModel.fromCity()"> </span>
-        <span class="boldsize" data-bind="text:  moment(aviaFormModel.toDate()).format('DD.MM.YYYY')"> </span>
+        <br /><span class="boldsize" data-bind="text:aviaScheduleModel.routeTo()"> </span> 
         <div data-bind="foreach: {data: filteredFlightsTo, as: 'flight'}">
             <div  class="offer">
                 <span data-bind="text: flight.airlineCode"></span>-<span data-bind="text: flight.number"></span>

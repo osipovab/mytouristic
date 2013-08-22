@@ -46,7 +46,7 @@ namespace MyTouristic.Models
             var random = new Random();
             var listFlights = new List<Flight>();
 
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 15; i++)
             {
                 var fl = new Flight();
                 fl.AirlineCode = airlineCode[random.Next(0, 5)];

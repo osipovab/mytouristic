@@ -17,12 +17,12 @@ namespace MyTouristic.Models
 
             if (searchType == "byPrice")
             {
-                for (var i = 0; i < 10; i++)
+                for (var i = 0; i < 20; i++)
                 {
                     var fl = new List<Flight>();
                     fl = new Flight().GetRandomFlight(fromCity, toCity, fromDate, toDate);
                     listOffer.Add(new Offer {Flights = fl, Price = random.Next(2000, 9000)});
-                    System.Threading.Thread.Sleep(10);
+                    System.Threading.Thread.Sleep(20);
                 }
 
                 return listOffer.OrderBy(r => r.Price).ToList();
@@ -32,9 +32,9 @@ namespace MyTouristic.Models
                 var fl = new List<Flight>();
                 fl = new Flight().GetRandomFlightByShedule(fromCity, toCity, fromDate);
                 listOffer.Add(new Offer { Flights = fl, Price = random.Next(2000, 9000) });
-                System.Threading.Thread.Sleep(10);
+                System.Threading.Thread.Sleep(20);
                 fl = new Flight().GetRandomFlightByShedule(toCity, fromCity, toDate);
-                System.Threading.Thread.Sleep(10);
+                System.Threading.Thread.Sleep(20);
                 listOffer.Add(new Offer { Flights = fl, Price = random.Next(2000, 9000) });
                 return listOffer;
             }

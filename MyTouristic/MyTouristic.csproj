@@ -253,7 +253,13 @@
     <Content Include="Global.asax" />
     <None Include="Scripts\Lib\jquery.validate-vsdoc.js" />
     <None Include="Scripts\Lib\jquery-1.7.2.intellisense.js" />
-    <Content Include="Scripts\App\zapp.js" />
+    <Content Include="Scripts\App\aviaFilterModel.js" />
+    <Content Include="Scripts\App\aviaFligthModel.js" />
+    <Content Include="Scripts\App\aviaFormModel.js" />
+    <Content Include="Scripts\App\aviaOfferModel.js" />
+    <Content Include="Scripts\App\aviaPriceModel.js" />
+    <Content Include="Scripts\App\aviaSheduleModel.js" />
+    <Content Include="Scripts\App\aviaProcessContainerModel.js" />
     <Content Include="Scripts\App\ko.bindingHandlers.js" />
     <Content Include="Scripts\Lib\jquery-1.7.2.js" />
     <Content Include="Scripts\Lib\jquery-1.7.2.min.js" />
